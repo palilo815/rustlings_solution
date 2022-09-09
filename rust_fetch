@@ -1,0 +1,37 @@
+#!/usr/bin/bash
+
+# requires 'fd'
+
+from="./exercises"
+to="/home/palilo/Desktop/rustlings_solution"
+
+if [ $# -ne 1 ]; then
+    echo "Usage --- {topic}"
+    echo "e.g. ---- 'intro'"
+    exit 1
+fi
+
+topic=$1 # intro
+
+if [[ ! -d $from/$topic ]]; then
+    echo "this topic does not exist!"
+    exit 1
+fi
+
+num="$(fd -t d . ../rustlings_solution | wc -l)_"
+if [[ ${#num} == 2 ]]; then
+    num="0$num"
+fi
+
+mkdir -p $to/$num$topic
+
+for file in $from/$topic/*
+do
+    echo file $file
+    if [[ $file == *.rs ]]; then
+        rustfmt $file
+    fi
+    cp $file $to/$num$topic/
+done
+
+echo "done"
